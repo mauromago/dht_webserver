@@ -40,9 +40,6 @@ long shortLoop = 100;
 long shortDelay = 100;
 int lettTodo = 10;
 
-//EthernetServer server(80);
-//DS18B20MED mytest (shortDelay, shortLoop, lettTodo);
-
 dht DHT;
 
 void setup() {
@@ -66,20 +63,17 @@ void setup() {
   //server.begin();
   Serial.println(DHT_LIB_VERSION);
   }
+
 void loop() {
   WiFiClient client = server.available();
-  //EthernetClient client = server.available();
+  
   if (client) {
-    //Serial.println("new client");
-    // an http request ends with a blank line
+    
     boolean currentLineIsBlank = true;
     while (client.connected()) {
       if (client.available()) {
         char c = client.read();
-        //Serial.write(c);
-        // if you've gotten to the end of the line (received a newline
-        // character) and the line is blank, the http request has ended,
-        // so you can send a reply
+        
         if (c == '\n' && currentLineIsBlank) {
           // send a standard http response header
           client.println("HTTP/1.1 200 OK");
@@ -92,57 +86,49 @@ void loop() {
           //mytest.DataConv (mytest.lettCycle(SENSOR_A), temp_string_a);
           
           uint32_t start = micros();
-    int chk = DHT.read22(DHT22_PIN);
-    uint32_t stop = micros();
+          int chk = DHT.read22(DHT22_PIN);
+          uint32_t stop = micros();
 
-    stat.total++;
-    switch (chk)
-    {
-    case DHTLIB_OK:
-        stat.ok++;
-        Serial.print("OK,\t");
-        break;
-    case DHTLIB_ERROR_CHECKSUM:
-        stat.crc_error++;
-        Serial.print("Checksum error,\t");
-        break;
-    case DHTLIB_ERROR_TIMEOUT:
-        stat.time_out++;
-        Serial.print("Time out error,\t");
-        break;
-    case DHTLIB_ERROR_CONNECT:
-        stat.connect++;
-        Serial.print("Connect error,\t");
-        break;
-    case DHTLIB_ERROR_ACK_L:
-        stat.ack_l++;
-        Serial.print("Ack Low error,\t");
-        break;
-    case DHTLIB_ERROR_ACK_H:
-        stat.ack_h++;
-        Serial.print("Ack High error,\t");
-        break;
-    default:
+         stat.total++;
+         switch (chk)
+        {
+            case DHTLIB_OK:
+            stat.ok++;
+            Serial.print("OK,\t");
+            break;
+            case DHTLIB_ERROR_CHECKSUM:
+            stat.crc_error++;
+            Serial.print("Checksum error,\t");
+            break;
+            case DHTLIB_ERROR_TIMEOUT:
+            stat.time_out++;
+            Serial.print("Time out error,\t");
+            break;
+            case DHTLIB_ERROR_CONNECT:
+            stat.connect++;
+            Serial.print("Connect error,\t");
+            break;
+            case DHTLIB_ERROR_ACK_L:
+            stat.ack_l++;
+            Serial.print("Ack Low error,\t");
+            break;
+            case DHTLIB_ERROR_ACK_H:
+            stat.ack_h++;
+            Serial.print("Ack High error,\t");
+            break;
+            default:
         stat.unknown++;
         Serial.print("Unknown error,\t");
         break;
     }
-    // DISPLAY DATA
-    Serial.print(DHT.humidity, 1);
+    
+            client.print("temp A ");
+            Serial.print(DHT.humidity, 1);
     Serial.print(",\t");
     Serial.print(DHT.temperature, 1);
     Serial.print(",\t");
     Serial.print(stop - start);
-    Serial.println();  
-            
-            client.print("temp A ");
           client.print(temp_string_a);
-          /*mytest.DataConv (mytest.lettCycle(SENSOR_B), temp_string_b);
-          client.print(" temp B ");
-          client.print(temp_string_b);
-          mytest.DataConv (mytest.lettCycle(SENSOR_C), temp_string_c);
-          client.print(" temp C ");
-          client.print(temp_string_c);*/
           client.println("<br />");
           client.println("</html>");
           break;
