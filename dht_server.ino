@@ -1,21 +1,17 @@
 /*
 ===========================================
-programma di log in caldaia
-legge tre sensori di temperatura ds18b20
+programma di log temperatura ed umidita'
+legge un sensore DHT su esp8266
 ===========================================
 */
 #include <ESP8266WiFi.h>
 #include <SPI.h>
-//#include <UIPEthernet.h>
-#include <DHT.h> //<DS18B20MED.h>
+#include <DHT.h> 
 
 const char* ssid = "BASE";
 const char* password = "";
 
-#define DHT_PIN 5       // DHT Shield uses pin D4
-//#define SENSOR_A  5
-//#define SENSOR_B  8 
-//#define SENSOR_C  7 
+#define DHT_PIN 5   
 
 struct
 {
@@ -31,21 +27,15 @@ struct
 
 // settaggio ethernet
 WiFiServer server(80);
-//IPAddress ip(192, 168, 1, 99); // where xx is the desired IP Address
-//IPAddress gateway(192, 168, 1, 1); // set gateway to match your network
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; //????
-//char server[] = "192.168.1.45";
 IPAddress subnet(255, 255, 255, 0); // set subnet mask to match your network
 IPAddress ip(192, 168, 1, 212); // controllare che non sia doppio
 IPAddress gateAway(192, 168, 1, 254);
 IPAddress DNS(8, 8, 8, 8);
 //settaggio sensore
 char temp_string_a[7];
-//char temp_string_b[7];
-//char temp_string_c[7];
-//long delayTime = 6000;
-//int  delayTimes = 100;
+
 long shortLoop = 100;
 long shortDelay = 100;
 int lettTodo = 10;
@@ -56,16 +46,7 @@ int lettTodo = 10;
 dht DHT;
 
 void setup() {
-  // Set up the data pins for communication with DS18B20 sensors
-  //digitalWrite(SENSOR_A, LOW);
-  //pinMode(SENSOR_A, INPUT);
-  //digitalWrite(SENSOR_B, LOW);
-  //pinMode(SENSOR_B, INPUT);
-  //digitalWrite(SENSOR_C, LOW);
-  //pinMode(SENSOR_C, INPUT);
   
-  // give the Ethernet shield a second to initialize:
-  //delay(10);
   Serial.begin(9600);
   // start the Ethernet connection:
   WiFi.config(ip, gateAway, subnet);
