@@ -108,8 +108,53 @@ void loop() {
           client.println();
           client.println("<!DOCTYPE HTML>");
           client.println("<html>");
-          mytest.DataConv (mytest.lettCycle(SENSOR_A), temp_string_a);
-          client.print("temp A ");
+          //mytest.DataConv (mytest.lettCycle(SENSOR_A), temp_string_a);
+          
+          uint32_t start = micros();
+    int chk = DHT.read22(DHT22_PIN);
+    uint32_t stop = micros();
+
+    stat.total++;
+    switch (chk)
+    {
+    case DHTLIB_OK:
+        stat.ok++;
+        Serial.print("OK,\t");
+        break;
+    case DHTLIB_ERROR_CHECKSUM:
+        stat.crc_error++;
+        Serial.print("Checksum error,\t");
+        break;
+    case DHTLIB_ERROR_TIMEOUT:
+        stat.time_out++;
+        Serial.print("Time out error,\t");
+        break;
+    case DHTLIB_ERROR_CONNECT:
+        stat.connect++;
+        Serial.print("Connect error,\t");
+        break;
+    case DHTLIB_ERROR_ACK_L:
+        stat.ack_l++;
+        Serial.print("Ack Low error,\t");
+        break;
+    case DHTLIB_ERROR_ACK_H:
+        stat.ack_h++;
+        Serial.print("Ack High error,\t");
+        break;
+    default:
+        stat.unknown++;
+        Serial.print("Unknown error,\t");
+        break;
+    }
+    // DISPLAY DATA
+    Serial.print(DHT.humidity, 1);
+    Serial.print(",\t");
+    Serial.print(DHT.temperature, 1);
+    Serial.print(",\t");
+    Serial.print(stop - start);
+    Serial.println();  
+            
+            client.print("temp A ");
           client.print(temp_string_a);
           /*mytest.DataConv (mytest.lettCycle(SENSOR_B), temp_string_b);
           client.print(" temp B ");
